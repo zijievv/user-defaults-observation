@@ -84,7 +84,7 @@ class Model {
 }
 ```
 
-⚠️ Note that when you use the `@ObservableUserDefaults(key:defaultValue:store)` macro, you need to add the `@ObservationIgnored` macro to the property. Otherwise, `@Observable` will generate accessors that conflict with `ObservableUserDefaults`.
+⚠️ Note that when you use the `@ObservableUserDefaults(key:store:)` macro, you need to add the `@ObservationIgnored` macro to the property. Otherwise, `@Observable` will generate accessors that conflict with `ObservableUserDefaults`.
 
 ## Installation
 
