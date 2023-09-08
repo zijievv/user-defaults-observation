@@ -4,7 +4,7 @@
 //
 //@Observable
 //class Model {
-//    @ObservableUserDefaults(key: "username", defaultValue: "User")
+//    @ObservableUserDefaults(key: "username")
 //    @ObservationIgnored
-//    var name: String
+//    var name: String = ""
 //}

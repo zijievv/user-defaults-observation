@@ -4,13 +4,14 @@ import UserDefaultsObservation
 
 @Observable
 class Model {
-    @ObservableUserDefaults(key: "text", defaultValue: "", store: Self.store)
+    @ObservableUserDefaults(key: "text", store: Self.store)
     @ObservationIgnored
-    var text: String
+    var text: String = "Text"
 
-    @ObservableUserDefaults(key: "value", defaultValue: 1)
+
+    @ObservableUserDefaults(key: "value")
     @ObservationIgnored
-    var value: Int
+    var value: Int = 1
 
     static let store = UserDefaults(suiteName: "Store")!
 }
