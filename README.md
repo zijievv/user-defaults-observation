@@ -13,13 +13,13 @@ import UserDefaultsObservation
 
 @Observable
 class Model {
-    @ObservableUserDefaults(key: "text", defaultValue: "", store: Self.store)
+    @ObservableUserDefaults(key: "text", store: Self.store)
     @ObservationIgnored
-    var text: String
+    var text: String = "Text"
 
-    @ObservableUserDefaults(key: "value", defaultValue: 1)
+    @ObservableUserDefaults(key: "value")
     @ObservationIgnored
-    var value: Int
+    var value: Int = 1
 
     static let store = UserDefaults(suiteName: "Store")!
 }
@@ -36,33 +36,49 @@ import UserDefaultsObservation
 class Model {
     @ObservationIgnored
     var text: String {
+        @storageRestrictions(initializes: _text)
+        init(initialValue) {
+            _text = initialValue
+        }
         get {
             access(keyPath: \.text)
             let store: UserDefaults = Self.store
-            return (store.value(forKey: "text") as? String) ?? ""
+            _text = (store.value(forKey: "text") as? String) ?? _text
+            return _text
         }
         set {
             withMutation(keyPath: \.text) {
                 let store: UserDefaults = Self.store
-                store.set(newValue, forKey: "text")
+                _text = newValue
+                store.set(_text, forKey: "text")
             }
         }
     }
+    
+    @ObservationIgnored private var _text: String = "Text"
 
     @ObservationIgnored
-    var value: Int {
+    var value: Int = 1 {
+        @storageRestrictions(initializes: _value)
+        init(initialValue) {
+            _value = initialValue
+        }
         get {
             access(keyPath: \.value)
             let store: UserDefaults = .standard
-            return (store.value(forKey: "value") as? Int) ?? 1
+            _value = (store.value(forKey: "value") as? Int) ?? _value
+            return _value
         }
         set {
             withMutation(keyPath: \.value) {
                 let store: UserDefaults = .standard
-                store.set(newValue, forKey: "value")
+                _value = newValue
+                store.set(_value, forKey: "value")
             }
         }
     }
+    
+    @ObservationIgnored private var _value: Int = 1
 
     static let store = UserDefaults(suiteName: "Store")!
 }
