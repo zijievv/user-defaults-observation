@@ -30,19 +30,17 @@ class Model {
         get {
             access(keyPath: \.name)
             let store: UserDefaults = .standard
-            _name = (store.value(forKey: "username") as? String) ?? _name
-            return _name
+            return (store.value(forKey: "username") as? String) ?? _name
         }
         set {
             withMutation(keyPath: \.name) {
                 let store: UserDefaults = .standard
-                _name = newValue
-                store.set(_name, forKey: "username")
+                store.set(newValue, forKey: "username")
             }
         }
     }
 
-    @ObservationIgnored private var _name: String = "User"
+    @ObservationIgnored private let _name: String
 }
 """#,
             macros: testMacros
@@ -71,19 +69,17 @@ class Model {
         get {
             access(keyPath: \.val)
             let store: UserDefaults = .init(suiteName: "Store")!
-            _val = (store.value(forKey: "value") as? Int) ?? _val
-            return _val
+            return (store.value(forKey: "value") as? Int) ?? _val
         }
         set {
             withMutation(keyPath: \.val) {
                 let store: UserDefaults = .init(suiteName: "Store")!
-                _val = newValue
-                store.set(_val, forKey: "value")
+                store.set(newValue, forKey: "value")
             }
         }
     }
 
-    @ObservationIgnored private var _val: Int = 1
+    @ObservationIgnored private let _val: Int
 }
 """#,
             macros: testMacros

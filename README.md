@@ -43,19 +43,17 @@ class Model {
         get {
             access(keyPath: \.text)
             let store: UserDefaults = Self.store
-            _text = (store.value(forKey: "text") as? String) ?? _text
-            return _text
+            return (store.value(forKey: "text") as? String) ?? _text
         }
         set {
             withMutation(keyPath: \.text) {
                 let store: UserDefaults = Self.store
-                _text = newValue
-                store.set(_text, forKey: "text")
+                store.set(newValue, forKey: "text")
             }
         }
     }
     
-    @ObservationIgnored private var _text: String = "Text"
+    @ObservationIgnored private let _text: String
 
     @ObservationIgnored
     var value: Int = 1 {
@@ -66,19 +64,17 @@ class Model {
         get {
             access(keyPath: \.value)
             let store: UserDefaults = .standard
-            _value = (store.value(forKey: "value") as? Int) ?? _value
-            return _value
+            return (store.value(forKey: "value") as? Int) ?? _value
         }
         set {
             withMutation(keyPath: \.value) {
                 let store: UserDefaults = .standard
-                _value = newValue
-                store.set(_value, forKey: "value")
+                store.set(newValue, forKey: "value")
             }
         }
     }
     
-    @ObservationIgnored private var _value: Int = 1
+    @ObservationIgnored private var _value: Int
 
     static let store = UserDefaults(suiteName: "Store")!
 }

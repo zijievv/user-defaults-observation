@@ -16,12 +16,7 @@ extension UserDefaultsObservationMacro: PeerMacro {
         let varDecl = try variableDecl(declaration)
         let name = try name(from: varDecl)
         let type = try type(from: varDecl)
-        let statement: DeclSyntax = if let initializer = varDecl.bindings.first?.initializer {
-            "@ObservationIgnored private var _\(raw: name): \(raw: type) \(initializer)"
-        } else {
-            "@ObservationIgnored private var _\(raw: name): \(raw: type)"
-        }
-        return [statement]
+        return ["@ObservationIgnored private let _\(raw: name): \(raw: type)"]
     }
 }
 
@@ -72,16 +67,14 @@ init(initialValue) {
 get {
     access(keyPath: \.\#(raw: name))
     let store: UserDefaults = \#(storeExpr)
-    _\#(raw: name) = (store.value(forKey: \#(keyExpr)) as? \#(raw: type)) ?? _\#(raw: name)
-    return _\#(raw: name)
+    return (store.value(forKey: \#(keyExpr)) as? \#(raw: type)) ?? _\#(raw: name)
 }
 """#,
             #"""
 set {
     withMutation(keyPath: \.\#(raw: name)) {
         let store: UserDefaults = \#(storeExpr)
-        _\#(raw: name) = newValue
-        store.set(_\#(raw: name), forKey: \#(keyExpr))
+        store.set(newValue, forKey: \#(keyExpr))
     }
 }
 """#,
