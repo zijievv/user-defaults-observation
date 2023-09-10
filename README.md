@@ -74,7 +74,7 @@ class Model {
         }
     }
     
-    @ObservationIgnored private var _value: Int
+    @ObservationIgnored private let _value: Int
 
     static let store = UserDefaults(suiteName: "Store")!
 }
