@@ -28,6 +28,10 @@ final class UserDefaultsObservationTests: XCTestCase {
         UserDefaults.standard._$observationSet(item, forKey: "item")
         let get = UserDefaults.standard._$observationGet(Item.self, forKey: "item")
         XCTAssertEqual(item.name, get?.name)
+
+        UserDefaults.standard._$observationSet("haha", forKey: "wa")
+        UserDefaults.standard.string(forKey: "wa")
+        XCTAssertEqual("haha", UserDefaults.standard.string(forKey: "wa"))
     }
 
     func testUsage() {

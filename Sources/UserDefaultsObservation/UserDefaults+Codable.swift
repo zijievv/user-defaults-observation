@@ -14,7 +14,7 @@ public extension UserDefaults {
     }
 
     func _$observationGet<T: Codable>(_ type: T.Type, forKey key: String) -> T? {
-        if [Int.self, Float.self, Double.self, Bool.self, URL.self].contains(where: { type == $0 }) {
+        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(where: { type == $0 }) {
             return value(forKey: key) as? T
         }
         if let data = value(forKey: key) as? Data {
@@ -33,7 +33,7 @@ public extension UserDefaults {
             set(nil, forKey: key)
             return
         }
-        if [Int.self, Float.self, Double.self, Bool.self, URL.self].contains(where: { T.self == $0 }) {
+        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(where: { T.self == $0 }) {
             set(value, forKey: key)
         } else {
             let encoder = JSONEncoder()
