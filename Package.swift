@@ -6,7 +6,7 @@ import PackageDescription
 
 let package = Package(
     name: "user-defaults-observation",
-    platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
+    platforms: [.macOS(.v13), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
         .library(
             name: "UserDefaultsObservation",
