@@ -14,15 +14,14 @@ extension UserDefaults {
     }
 
     public func _$observationGet<T: Codable>(_ type: T.Type, forKey key: String) -> T? {
-        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(
-            where: { type == $0 })
-        {
-            return value(forKey: key) as? T
+        let anyValue = value(forKey: key)
+        return if let valueT = anyValue as? T {
+            valueT
+        } else if let data = anyValue as? Data {
+            try? JSONDecoder().decode(type, from: data)
+        } else {
+            nil
         }
-        if let data = value(forKey: key) as? Data {
-            return try? JSONDecoder().decode(type, from: data)
-        }
-        return nil
     }
 
     @_disfavoredOverload
@@ -35,11 +34,13 @@ extension UserDefaults {
             set(nil, forKey: key)
             return
         }
-        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(
-            where: { T.self == $0 })
-        {
+        switch T.self {
+        case is Int.Type, is Int8.Type, is Int16.Type, is Int32.Type, is Int64.Type,
+            is UInt.Type, is UInt8.Type, is UInt16.Type, is UInt32.Type, is UInt64.Type,
+            is Float.Type, is Double.Type, is String.Type, is Data.Type, is Date.Type, is Bool.Type, is URL.Type,
+            is [Int].Type, is [Double].Type, is [Date].Type, is [URL].Type, is [String].Type:
             set(value, forKey: key)
-        } else {
+        default:
             let encoder = JSONEncoder()
             encoder.outputFormatting = .sortedKeys
             let data = try? encoder.encode(value)
