@@ -11,11 +11,7 @@ let package = Package(
         .library(
             name: "UserDefaultsObservation",
             targets: ["UserDefaultsObservation"]
-        ),
-        .executable(
-            name: "UserDefaultsObservationClient",
-            targets: ["UserDefaultsObservationClient"]
-        ),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax", from: "509.0.0")
@@ -31,10 +27,6 @@ let package = Package(
         .target(
             name: "UserDefaultsObservation",
             dependencies: ["UserDefaultsObservationMacros"]
-        ),
-        .executableTarget(
-            name: "UserDefaultsObservationClient",
-            dependencies: ["UserDefaultsObservation"]
         ),
         .testTarget(
             name: "UserDefaultsObservationTests",
