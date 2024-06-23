@@ -8,7 +8,6 @@ class Model {
     @ObservationIgnored
     var text: String = "Text"
 
-
     @ObservableUserDefaults(key: "value")
     @ObservationIgnored
     var value: Int = 1

@@ -1,13 +1,13 @@
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import UserDefaultsObservation
 import XCTest
 
 #if canImport(UserDefaultsObservationMacros)
-import UserDefaultsObservationMacros
+@testable import UserDefaultsObservation
+@testable import UserDefaultsObservationMacros
 
 let testMacros: [String: Macro.Type] = [
-    "ObservableUserDefaults": UserDefaultsObservationMacro.self,
+    "ObservableUserDefaults": UserDefaultsObservationMacro.self
 ]
 #endif
 
@@ -43,7 +43,7 @@ final class UserDefaultsObservationTests: XCTestCase {
     }
 
     func testUserDefaultsObservationStandardStoreMacro() throws {
-#if canImport(UserDefaultsObservationMacros)
+        #if canImport(UserDefaultsObservationMacros)
         assertMacroExpansion(
             """
             class Model {
@@ -51,38 +51,39 @@ final class UserDefaultsObservationTests: XCTestCase {
                 var name: String = "User"
             }
             """,
-            expandedSource: #"""
-            class Model {
-                var name: String = "User" {
-                    @storageRestrictions(initializes: _name)
-                    init(initialValue) {
-                        _name = initialValue
-                    }
-                    get {
-                        access(keyPath: \.name)
-                        let store: UserDefaults = .standard
-                        return store._$observationGet(String.self, forKey: "username") ?? _name
-                    }
-                    set {
-                        withMutation(keyPath: \.name) {
+            expandedSource:
+                #"""
+                class Model {
+                    var name: String = "User" {
+                        @storageRestrictions(initializes: _name)
+                        init(initialValue) {
+                            _name = initialValue
+                        }
+                        get {
+                            access(keyPath: \.name)
                             let store: UserDefaults = .standard
-                            store._$observationSet(newValue, forKey: "username")
+                            return store._$observationGet(String.self, forKey: "username") ?? _name
+                        }
+                        set {
+                            withMutation(keyPath: \.name) {
+                                let store: UserDefaults = .standard
+                                store._$observationSet(newValue, forKey: "username")
+                            }
                         }
                     }
-                }
 
-                @ObservationIgnored private let _name: String
-            }
-            """#,
+                    @ObservationIgnored private let _name: String
+                }
+                """#,
             macros: testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 
     func testUserDefaultsObservationCustomStoreMacro() throws {
-#if canImport(UserDefaultsObservationMacros)
+        #if canImport(UserDefaultsObservationMacros)
         assertMacroExpansion(
             """
             class Model {
@@ -90,33 +91,34 @@ final class UserDefaultsObservationTests: XCTestCase {
                 var val: Int = 1
             }
             """,
-            expandedSource: #"""
-            class Model {
-                var val: Int = 1 {
-                    @storageRestrictions(initializes: _val)
-                    init(initialValue) {
-                        _val = initialValue
-                    }
-                    get {
-                        access(keyPath: \.val)
-                        let store: UserDefaults = .init(suiteName: "Store")!
-                        return store._$observationGet(Int.self, forKey: "value") ?? _val
-                    }
-                    set {
-                        withMutation(keyPath: \.val) {
+            expandedSource:
+                #"""
+                class Model {
+                    var val: Int = 1 {
+                        @storageRestrictions(initializes: _val)
+                        init(initialValue) {
+                            _val = initialValue
+                        }
+                        get {
+                            access(keyPath: \.val)
                             let store: UserDefaults = .init(suiteName: "Store")!
-                            store._$observationSet(newValue, forKey: "value")
+                            return store._$observationGet(Int.self, forKey: "value") ?? _val
+                        }
+                        set {
+                            withMutation(keyPath: \.val) {
+                                let store: UserDefaults = .init(suiteName: "Store")!
+                                store._$observationSet(newValue, forKey: "value")
+                            }
                         }
                     }
-                }
 
-                @ObservationIgnored private let _val: Int
-            }
-            """#,
+                    @ObservationIgnored private let _val: Int
+                }
+                """#,
             macros: testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 }

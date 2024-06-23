@@ -133,8 +133,8 @@ enum UserDefaultsObservationMacrosDiagnostic: DiagnosticMessage {
     var diagnosticID: MessageID { .init(domain: "UserDefaultsObservationMacro", id: message) }
 }
 
-fileprivate extension DiagnosticsError {
-    init(node: Syntax, message: UserDefaultsObservationMacrosDiagnostic) {
+extension DiagnosticsError {
+    fileprivate init(node: Syntax, message: UserDefaultsObservationMacrosDiagnostic) {
         self.init(diagnostics: [.init(node: node, message: message)])
     }
 }
@@ -144,6 +144,6 @@ fileprivate extension DiagnosticsError {
 @main
 struct UserDefaultsObservationMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        UserDefaultsObservationMacro.self,
+        UserDefaultsObservationMacro.self
     ]
 }

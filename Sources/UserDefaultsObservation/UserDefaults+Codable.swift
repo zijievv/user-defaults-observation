@@ -7,14 +7,16 @@
 
 import Foundation
 
-public extension UserDefaults {
+extension UserDefaults {
     @_disfavoredOverload
-    func _$observationGet<T>(_ type: T.Type, forKey key: String) -> T? {
+    public func _$observationGet<T>(_ type: T.Type, forKey key: String) -> T? {
         value(forKey: key) as? T
     }
 
-    func _$observationGet<T: Codable>(_ type: T.Type, forKey key: String) -> T? {
-        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(where: { type == $0 }) {
+    public func _$observationGet<T: Codable>(_ type: T.Type, forKey key: String) -> T? {
+        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(
+            where: { type == $0 })
+        {
             return value(forKey: key) as? T
         }
         if let data = value(forKey: key) as? Data {
@@ -24,16 +26,18 @@ public extension UserDefaults {
     }
 
     @_disfavoredOverload
-    func _$observationSet(_ value: Any?, forKey key: String) {
+    public func _$observationSet(_ value: Any?, forKey key: String) {
         set(value, forKey: key)
     }
 
-    func _$observationSet<T: Codable>(_ value: T?, forKey key: String) {
+    public func _$observationSet<T: Codable>(_ value: T?, forKey key: String) {
         guard let value else {
             set(nil, forKey: key)
             return
         }
-        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(where: { T.self == $0 }) {
+        if [Int.self, Float.self, Double.self, Bool.self, URL.self, String.self, Data.self, [String].self].contains(
+            where: { T.self == $0 })
+        {
             set(value, forKey: key)
         } else {
             let encoder = JSONEncoder()
