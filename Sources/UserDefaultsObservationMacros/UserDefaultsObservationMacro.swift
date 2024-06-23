@@ -7,6 +7,7 @@ import SwiftSyntaxMacros
 public struct UserDefaultsObservationMacro {}
 
 // MARK: - Peer Macro
+
 extension UserDefaultsObservationMacro: PeerMacro {
     public static func expansion(
         of node: AttributeSyntax,
@@ -44,6 +45,7 @@ extension UserDefaultsObservationMacro {
 }
 
 // MARK: - Accessor Macro
+
 extension UserDefaultsObservationMacro: AccessorMacro {
     public static func expansion(
         of node: AttributeSyntax,
@@ -58,26 +60,26 @@ extension UserDefaultsObservationMacro: AccessorMacro {
         let storeExpr = try userDefaultsExpr(from: arguments)
         return [
             #"""
-@storageRestrictions(initializes: _\#(raw: name))
-init(initialValue) {
-    _\#(raw: name) = initialValue
-}
-"""#,
+            @storageRestrictions(initializes: _\#(raw: name))
+            init(initialValue) {
+                _\#(raw: name) = initialValue
+            }
+            """#,
             #"""
-get {
-    access(keyPath: \.\#(raw: name))
-    let store: UserDefaults = \#(storeExpr)
-    return (store.value(forKey: \#(keyExpr)) as? \#(raw: type)) ?? _\#(raw: name)
-}
-"""#,
+            get {
+                access(keyPath: \.\#(raw: name))
+                let store: UserDefaults = \#(storeExpr)
+                return store._$observationGet(\#(raw: type).self, forKey: \#(keyExpr)) ?? _\#(raw: name)
+            }
+            """#,
             #"""
-set {
-    withMutation(keyPath: \.\#(raw: name)) {
-        let store: UserDefaults = \#(storeExpr)
-        store.set(newValue, forKey: \#(keyExpr))
-    }
-}
-"""#,
+            set {
+                withMutation(keyPath: \.\#(raw: name)) {
+                    let store: UserDefaults = \#(storeExpr)
+                    store._$observationSet(newValue, forKey: \#(keyExpr))
+                }
+            }
+            """#,
         ]
     }
 
@@ -106,6 +108,7 @@ set {
 }
 
 // MARK: - Diagnostics Error
+
 enum UserDefaultsObservationMacrosDiagnostic: DiagnosticMessage {
     case notVariableProperty
     case invalidPatternName
@@ -127,19 +130,20 @@ enum UserDefaultsObservationMacrosDiagnostic: DiagnosticMessage {
         }
     }
 
-    var diagnosticID: MessageID { .init(domain: "UserDefaultsObservationMacro", id: self.message) }
+    var diagnosticID: MessageID { .init(domain: "UserDefaultsObservationMacro", id: message) }
 }
 
-extension DiagnosticsError {
-    fileprivate init(node: Syntax, message: UserDefaultsObservationMacrosDiagnostic) {
+fileprivate extension DiagnosticsError {
+    init(node: Syntax, message: UserDefaultsObservationMacrosDiagnostic) {
         self.init(diagnostics: [.init(node: node, message: message)])
     }
 }
 
 // MARK: - Plugin
+
 @main
 struct UserDefaultsObservationMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        UserDefaultsObservationMacro.self
+        UserDefaultsObservationMacro.self,
     ]
 }
